@@ -1,3 +1,20 @@
+# UI-Grid : this fork fixes the problem with pinned columns in UI-Grid 2.x (AKA NG-Grid)
+
+I faced this problem in a project that uses UI-Grid 2.0.14. 
+When I fixed the issue, I sent pull request to UI-Grid repository maintainers, but it was rejected as 2.x branch isn't supported anymore. So I leave it here in hope that others who use UI-Grid 2.x and face this problem will find the solution here.
+
+## Fixed problem description
+
+### The problem
+If table is rendered with UI-Grid 2.x and browser window is scaled in - i.e. browser window scale isn't exactly 100% but bigger or lesser,  then pinned columns are rendered incorrectly. Firstly, they are not pinned - they scroll when parent table is scrolled. Secondly - when pinned column is scrolled out of viewport and after that is scrolled back, then it is rendered as blank space.
+The issue happens when using `Chrome` browser, but not happens when using `Firefox` and `Opera`.
+
+### The problem causes
+UI-Grid 2.x implements pinned column behaviour by modifying its `position` attribute in `CSS` so that pinned colums stays fixed when parent table is scrolled. Specific `CSS` postion attribute is located by regular expression that looks for integer position attribute value. When browser is scaled, calculated by UI-Grid position value becomes fractional, and `Chrome` does not round this value when it is set in position `CSS` attributes, but keeps it fractional. So code cannot find needed attribute and cannot modify it. `Firefox` and `Opera` round value when it is set into `CSS`.
+The problem is fixed by rounding position value before setting it into `CSS` attribute.
+
+# *** Here goes original readme from main UI-Grid repository
+
 # UI-Grid : An AngularJS data grid
 
 [![Build Status](https://travis-ci.org/angular-ui/ui-grid.svg?branch=master)](https://travis-ci.org/angular-ui/ui-grid)
